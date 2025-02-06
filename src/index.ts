@@ -2,27 +2,21 @@ import { Hono } from "hono";
 import { fetchDidDocument, getPdsUrl, pullAndVerifyCid } from "./atproto";
 import { getBlob } from "./blob";
 import { Bindings } from "./types";
+import { Preset, presets } from "./presets";
 
 const app = new Hono<Bindings>();
 
 app.get(`/:typeName/:did/:cid`, async (c) => {
   const { typeName, did, cid } = c.req.param();
-  if (typeName !== 'img') return c.notFound();
+
+  if (!Object.keys(presets).includes(typeName)) return c.notFound();
 
   let options = {
     cf: {
-      image: {
-        quality: 50,
-        format: 'webp',
-        fit: 'scale-down',
-      },
+      image: presets[typeName as Preset],
       cacheKey: `${did}:${cid}/${typeName}`,
     } as RequestInitCfProperties,
   };
-
-  if (c.req.query('fit')) options.cf.image!.fit = c.req.query('fit') as RequestInitCfPropertiesImage['fit'];
-  if (c.req.query('width')) options.cf.image!.width = parseInt(c.req.query('width')!);
-  if (c.req.query('height')) options.cf.image!.height = parseInt(c.req.query('height')!);
 
   const didDoc = await fetchDidDocument(c, did);
   if (!didDoc) return c.notFound();
