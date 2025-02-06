@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cdnat",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-04",
+  "observability": { "enabled": true },
+  "kv_namespaces": [
+    {
+      "binding": "didCache",
+      "id": "956b5e5fb0f54de59a41fe6a5ad2f690"
+    },
+    {
+      "binding": "cidCache",
+      "id": "9e0cd146cefa44e98963c954323b3617"
+    }
+  ],
+  "routes": [
+    { "pattern": "cdnat.hayden.moe", "custom_domain": true }
+  ]
+}
