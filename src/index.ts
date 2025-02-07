@@ -22,13 +22,16 @@ app.get(`/:typeName/:did/:cid`, async (c) => {
   if (!didDoc) return c.notFound();
 
   const pdsUrl = getPdsUrl(didDoc);
-  if (!pdsUrl) return c.json({ message: 'Could not resolve PDS URL' }, 400);
+  if (!pdsUrl) return c.json({ message: "Could not resolve PDS URL" }, 400);
 
   const verified = await pullAndVerifyCid(c, pdsUrl, did, cid);
   if (!verified) {
-    return c.json({
-      message: 'PDS blob CID did not match the requested blob CID.',
-    }, 400);
+    return c.json(
+      {
+        message: "PDS blob CID did not match the requested blob CID.",
+      },
+      400,
+    );
   }
 
   return getBlob(pdsUrl, did, cid, options);
